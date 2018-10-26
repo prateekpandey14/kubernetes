@@ -25,6 +25,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/golang/glog"
@@ -707,6 +708,10 @@ func validateISCSIVolumeSource(iscsi *core.ISCSIVolumeSource, fldPath *field.Pat
 			allErrs = append(allErrs, field.Invalid(fldPath.Child("initiatorname"), initiator, "must be valid format"))
 		}
 	}
+	timeout, err := strconv.Atoi(iscsi.ReplacementTimeout)
+	if timeout < 0 || err != nil {
+		allErrs = append(allErrs, field.Invalid(fldPath.Child("replacementTimeout"), timeout, "must be greater than or equal to 0"))
+	}
 	return allErrs
 }
 
@@ -751,6 +756,10 @@ func validateISCSIPersistentVolumeSource(iscsi *core.ISCSIPersistentVolumeSource
 		} else if strings.HasPrefix(initiator, "naa") && !iscsiInitiatorNaaRegex.MatchString(initiator) {
 			allErrs = append(allErrs, field.Invalid(fldPath.Child("initiatorname"), initiator, "must be valid format"))
 		}
+	}
+	timeout, err := strconv.Atoi(iscsi.ReplacementTimeout)
+	if timeout < 0 || err != nil {
+		allErrs = append(allErrs, field.Invalid(fldPath.Child("replacementTimeout"), timeout, "must be greater than or equal to 0"))
 	}
 	return allErrs
 }

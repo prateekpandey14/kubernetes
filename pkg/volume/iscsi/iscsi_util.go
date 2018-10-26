@@ -68,6 +68,8 @@ var (
 	ifaceRe              = regexp.MustCompile(`.+/iface-([^/]+)/.+`)
 )
 
+const iscsiTimeoutKey = "node.session.timeo.replacement_timeout"
+
 func updateISCSIDiscoverydb(b iscsiDiskMounter, tp string) error {
 	if !b.chap_discovery {
 		return nil
@@ -86,10 +88,30 @@ func updateISCSIDiscoverydb(b iscsiDiskMounter, tp string) error {
 			}
 		}
 	}
+
 	return nil
 }
 
+//updateISCSINodeTimeouts will update the timeout settings with the
+//values provided in Persistent Volume object
+func updateISCSINodeTimeouts(b iscsiDiskMounter, tp string) {
+	//Updating the iSCSI timeouts settings to keep volume in RW state in the node
+	//down scenario i.e when the node goes down K8s take 5min to schedule the node
+	//until that time we can keep volume in RW state by updating these timeouts
+	//setting value to 300+ seconds. This updation will execute if PV object
+	//contains a valid key, value pair
+	if b.replacementTimeout != "" {
+		out, err := b.exec.Run("iscsiadm", "-m", "node", "-p", tp, "-T", b.Iqn, "-I", b.Iface, "-o", "update", "-n", iscsiTimeoutKey, "-v", b.replacementTimeout)
+		if err != nil {
+			fmt.Errorf("iscsi: failed to update node with TIMEOUT, output: %v", string(out))
+		}
+	}
+}
+
 func updateISCSINode(b iscsiDiskMounter, tp string) error {
+	//Updating the iSCSI timeouts settings
+	updateISCSINodeTimeouts(b, tp)
+
 	if !b.chap_session {
 		return nil
 	}

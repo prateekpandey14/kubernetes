@@ -2364,6 +2364,26 @@ func TestValidateVolumes(t *testing.T) {
 			}},
 		},
 		{
+			name: "invalid replacementTimeout",
+			vol: core.Volume{
+				Name: "iscsi",
+				VolumeSource: core.VolumeSource{
+					ISCSI: &core.ISCSIVolumeSource{
+						TargetPortal:       "127.0.0.1",
+						IQN:                "iqn.2015-02.example.com:test",
+						Lun:                1,
+						FSType:             "ext4",
+						ReadOnly:           false,
+						ReplacementTimeout: -23,
+					},
+				},
+			},
+			errs: []verr{{
+				etype: field.ErrorTypeInvalid,
+				field: "iscsi.replacementtimeout",
+			}},
+		},
+		{
 			name: "empty secret",
 			vol: core.Volume{
 				Name: "iscsi",
@@ -10285,14 +10305,14 @@ func TestValidateNode(t *testing.T) {
 		for i := range errs {
 			field := errs[i].Field
 			expectedFields := map[string]bool{
-				"metadata.name":         true,
-				"metadata.labels":       true,
-				"metadata.annotations":  true,
-				"metadata.namespace":    true,
-				"spec.externalID":       true,
-				"spec.taints[0].key":    true,
-				"spec.taints[0].value":  true,
-				"spec.taints[0].effect": true,
+				"metadata.name":                                                                                               true,
+				"metadata.labels":                                                                                             true,
+				"metadata.annotations":                                                                                        true,
+				"metadata.namespace":                                                                                          true,
+				"spec.externalID":                                                                                             true,
+				"spec.taints[0].key":                                                                                          true,
+				"spec.taints[0].value":                                                                                        true,
+				"spec.taints[0].effect":                                                                                       true,
 				"metadata.annotations.scheduler.alpha.kubernetes.io/preferAvoidPods[0].PodSignature":                          true,
 				"metadata.annotations.scheduler.alpha.kubernetes.io/preferAvoidPods[0].PodSignature.PodController.Controller": true,
 			}
@@ -12235,7 +12255,7 @@ func TestValidateBasicAuthSecret(t *testing.T) {
 		secret core.Secret
 		valid  bool
 	}{
-		"valid":                         {validBasicAuthSecret(), true},
+		"valid": {validBasicAuthSecret(), true},
 		"missing username and password": {missingBasicAuthUsernamePasswordKeys, false},
 	}
 

@@ -488,8 +488,8 @@ func TestGetISCSICHAP(t *testing.T) {
 			expectedError:         nil,
 		},
 		{
-			name:                  "no volume",
-			spec:                  &volume.Spec{},
+			name: "no volume",
+			spec: &volume.Spec{},
 			expectedDiscoveryCHAP: false,
 			expectedSessionCHAP:   false,
 			expectedError:         fmt.Errorf("Spec does not reference an ISCSI volume type"),
@@ -513,6 +513,79 @@ func TestGetISCSICHAP(t *testing.T) {
 		}
 	}
 }
+
+/*func TestGetISCSITimeoutSettingInfo(t *testing.T) {
+	tests := []testcase{
+		{
+			name: "persistent volume source",
+			spec: &volume.Spec{
+				PersistentVolume: &v1.PersistentVolume{
+					Spec: v1.PersistentVolumeSpec{
+						PersistentVolumeSource: v1.PersistentVolumeSource{
+							ISCSI: &v1.ISCSIPersistentVolumeSource{
+								ReplacementTimeout: "node.session.timeo.replacement_timeout=300",
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "pod volume source",
+			spec: &volume.Spec{
+				Volume: &v1.Volume{
+					VolumeSource: v1.VolumeSource{
+						ISCSI: &v1.ISCSIVolumeSource{
+							ReplacementTimeout: "node.session.timeo.replacement_timeout=300",
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "typo in pod volume source",
+			spec: &volume.Spec{
+				Volume: &v1.Volume{
+					VolumeSource: v1.VolumeSource{
+						ISCSI: &v1.ISCSIVolumeSource{
+							ReplacementTimeout: "node.session.timeo.replcement_timeout=300",
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "invalid pattern in pod volume source",
+			spec: &volume.Spec{
+				Volume: &v1.Volume{
+					VolumeSource: v1.VolumeSource{
+						ISCSI: &v1.ISCSIVolumeSource{
+							ReplacementTimeout: "node.session.timeo.replacement_timeout 300",
+						},
+					},
+				},
+			},
+		},
+	}
+	for _, testcase := range tests {
+		var fakeIscsiTimeout iscsiTimeout
+		fakeIscsiTimeout = getISCSITimeoutSettingInfo(testcase.spec)
+		switch testcase.name {
+		case "persistent volume source":
+			fallthrough
+		case "pod volume source":
+			if string(fakeIscsiTimeout.Name) != "node.session.timeo.replacement_timeout" && fakeIscsiTimeout.Value != "300" {
+				t.Errorf("%s failed: expected: setting = {%s %s} and got %v",
+					testcase.name, "node.session.timeo.replacement_timeout", "300",
+					fakeIscsiTimeout)
+			}
+		default:
+			if fakeIscsiTimeout != (iscsiTimeout{}) {
+				t.Errorf("%s failed expected %v and got %v", testcase.name, nil, fakeIscsiTimeout)
+			}
+		}
+	}
+}*/
 
 func TestGetVolumeSpec(t *testing.T) {
 	path := "plugins/kubernetes.io/iscsi/volumeDevices/iface-default/127.0.0.1:3260-iqn.2014-12.server:storage.target01-lun-0"

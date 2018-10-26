@@ -1156,6 +1156,13 @@ type ISCSIVolumeSource struct {
 	// <target portal>:<volume name> will be created for the connection.
 	// +optional
 	InitiatorName *string `json:"initiatorName,omitempty" protobuf:"bytes,12,opt,name=initiatorName"`
+	// iSCSI Replacement Timeout field required to set the iSCSI TimeoutSetting to wait for session re-establishment
+	// before failing SCSI commands back to the application when running the Linux SCSI Layer error handler.
+	// If the ReplacementTimeout value is 0, IO will be failed immediately.
+	// If the ReplacementTImeout value is less than 0, IO will remain queued until the session
+	// is logged back in, or until the user runs the logout command.
+	// +optional
+	ReplacementTimeout string `json:"replacementTimeout,omitempty" portobuf:"bytes,13,opt,name=replacementTimeout" protobuf:"varint,13,opt,name=replacementTimeout"`
 }
 
 // ISCSIPersistentVolumeSource represents an ISCSI disk.
@@ -1202,6 +1209,13 @@ type ISCSIPersistentVolumeSource struct {
 	// <target portal>:<volume name> will be created for the connection.
 	// +optional
 	InitiatorName *string `json:"initiatorName,omitempty" protobuf:"bytes,12,opt,name=initiatorName"`
+	// iSCSI Replacement Timeout field required to set the iSCSI TimeoutSetting to wait for session re-establishment
+	// before failing SCSI commands back to the application when running the Linux SCSI Layer error handler.
+	// If the ReplacementTimeout value is 0, IO will be failed immediately.
+	// If the ReplacementTImeout value is less than 0, IO will remain queued until the session
+	// is logged back in, or until the user runs the logout command.
+	// +optional
+	ReplacementTimeout string `json:"replacementTimeout,omitempty" portobuf:"bytes,13,opt,name=replacementTimeout" protobuf:"bytes,13,opt,name=replacementTimeout"`
 }
 
 // Represents a Fibre Channel volume.

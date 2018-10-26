@@ -650,6 +650,13 @@ type ISCSIVolumeSource struct {
 	// <target portal>:<volume name> will be created for the connection.
 	// +optional
 	InitiatorName *string
+	// iSCSI Replacement Timeout field required to set the iSCSI TimeoutSetting to wait for session re-establishment
+	// before failing SCSI commands back to the application when running the Linux SCSI Layer error handler.
+	// If the ReplacementTimeout value is 0, IO will be failed immediately.
+	// If the ReplacementTImeout value is less than 0, IO will remain queued until the session
+	// is logged back in, or until the user runs the logout command.
+	// +optional
+	ReplacementTimeout string
 }
 
 // ISCSIPersistentVolumeSource represents an ISCSI disk.
@@ -698,6 +705,13 @@ type ISCSIPersistentVolumeSource struct {
 	// <target portal>:<volume name> will be created for the connection.
 	// +optional
 	InitiatorName *string
+	// iSCSI Replacement Timeout field required to set the iSCSI TimeoutSetting to wait for session re-establishment
+	// before failing SCSI commands back to the application when running the Linux SCSI Layer error handler.
+	// If the ReplacementTimeout value is 0, IO will be failed immediately.
+	// If the ReplacementTImeout value is less than 0, IO will remain queued until the session
+	// is logged back in, or until the user runs the logout command.
+	// +optional
+	ReplacementTimeout string
 }
 
 // Represents a Fibre Channel volume.

@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 // +k8s:deepcopy-gen=package
+// +groupName=core.k8s.io
 
 // Package api contains the latest (or "internal") version of the
 // Kubernetes API objects. This is the API objects as represented in memory.
